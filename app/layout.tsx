@@ -1,5 +1,6 @@
 import './globals.css'
-import type { Metadata } from 'next'
+import React from 'react'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
 
@@ -8,6 +9,13 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'GitHubExplorer - Discover and Explore GitHub Repositories',
   description: 'Search, explore, and bookmark GitHub repositories with ease.',
+  metadataBase: new URL('https://githubexplorer.vercel.app'),
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 }
 
 export default function RootLayout({
@@ -24,14 +32,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div suppressHydrationWarning>
-            {children}
-          </div>
+          {children}
         </ThemeProvider>
       </body>
     </html>
   )
 }
+
+
+
 
 
 
