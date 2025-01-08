@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 const GITHUB_API_URL = 'https://api.github.com/search/repositories';
 const GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN;
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get('q');
   const page = searchParams.get('page') || '1';
   const perPage = '10';
@@ -21,6 +21,7 @@ export async function GET(request: Request) {
           'Authorization': `token ${GITHUB_API_TOKEN}`,
           'Accept': 'application/vnd.github.v3+json',
         },
+        next: { revalidate: 60 }, // Cache for 60 seconds
       }
     );
     const data = await response.json();
@@ -30,6 +31,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Failed to fetch GitHub data' }, { status: 500 });
   }
 }
+
+
 
 
 
