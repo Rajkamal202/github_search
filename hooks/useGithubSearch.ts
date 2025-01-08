@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { Trie } from '../lib/trie';
 
@@ -27,6 +26,7 @@ export function useGitHubSearch() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
+  const [seenRepos] = useState(new Set<number>());
 
   const searchRepositories = useCallback(async (query: string, pageNum: number) => {
     setLoading(true);
@@ -35,28 +35,42 @@ export function useGitHubSearch() {
       const response = await fetch(`/api/github?q=${encodeURIComponent(query)}&page=${pageNum}`);
       if (!response.ok) throw new Error('Failed to fetch repositories');
       const data = await response.json();
-      const newRepos = data.items?.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        full_name: item.full_name,
-        description: item.description,
-        stargazers_count: item.stargazers_count,
-        forks_count: item.forks_count,
-        html_url: item.html_url,
-        language: item.language,
-        owner: {
-          avatar_url: item.owner?.avatar_url,
-          login: item.owner?.login,
-        },
-      })) || [];
       
+      // Filter out duplicates
+      const newRepos = (data.items || [])
+        .filter((item: any) => !seenRepos.has(item.id))
+        .map((item: any) => {
+          seenRepos.add(item.id);
+          return {
+            id: item.id,
+            name: item.name,
+            full_name: item.full_name,
+            description: item.description,
+            stargazers_count: item.stargazers_count,
+            forks_count: item.forks_count,
+            html_url: item.html_url,
+            language: item.language,
+            owner: {
+              avatar_url: item.owner?.avatar_url,
+              login: item.owner?.login,
+            },
+          };
+        });
+
       // Sort repositories by stars in descending order
-      newRepos.sort((a, b) => b.stargazers_count - a.stargazers_count);
-      
-      setRepositories(prev => pageNum === 1 ? newRepos : [...prev, ...newRepos]);
+      newRepos.sort((a: Repository, b: Repository) => b.stargazers_count - a.stargazers_count);
+
+      if (pageNum === 1) {
+        seenRepos.clear(); // Clear seen repos when starting a new search
+        newRepos.forEach(repo => seenRepos.add(repo.id));
+        setRepositories(newRepos);
+      } else {
+        setRepositories(prev => [...prev, ...newRepos]);
+      }
+
       setTotalCount(data.total_count || 0);
       setHasMore(newRepos.length === 10);
-      
+
       // Populate trie with repository names
       newRepos.forEach((repo: Repository) => trie.insert(repo.name));
     } catch (err) {
@@ -65,7 +79,7 @@ export function useGitHubSearch() {
     } finally {
       setLoading(false);
     }
-  }, [trie]);
+  }, [trie, seenRepos]);
 
   useEffect(() => {
     if (searchTerm.length > 0) {
