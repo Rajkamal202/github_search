@@ -23,18 +23,19 @@ export default function Home() {
   const [favoriteRepos, setFavoriteRepos] = useState<Repository[]>([]);
 
   useEffect(() => {
-    const storedFavorites = localStorage.getItem('favorites');
-    if (storedFavorites) {
-      const parsedFavorites = new Set(JSON.parse(storedFavorites));
-      setFavorites(parsedFavorites);
-      const storedRepos = localStorage.getItem('favoriteRepos');
-      if (storedRepos) {
-        const parsedRepos: Repository[] = JSON.parse(storedRepos);
-        const uniqueRepos = Array.from(new Map(parsedRepos.map(repo => [repo.id, repo])).values());
-        setFavoriteRepos(uniqueRepos);
-      }
+  const storedFavorites = localStorage.getItem('favorites');
+  if (storedFavorites) {
+    const parsedFavorites = new Set<number>(JSON.parse(storedFavorites)); // Type assertion
+    setFavorites(parsedFavorites);
+    const storedRepos = localStorage.getItem('favoriteRepos');
+    if (storedRepos) {
+      const parsedRepos: Repository[] = JSON.parse(storedRepos);
+      const uniqueRepos = Array.from(new Map(parsedRepos.map(repo => [repo.id, repo])).values());
+      setFavoriteRepos(uniqueRepos);
     }
-  }, []);
+  }
+}, []);
+
 
   const toggleFavorite = (repo: Repository) => {
     setFavorites(prev => {
