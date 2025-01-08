@@ -10,12 +10,7 @@ import Header from '@/components/Headers';
 import Footer from '@/components/Footer';
 import { Github, Star, TrendingUp } from 'lucide-react';
 import ClientOnly from '@/components/client-only';
-
-interface Repository {
-  id: number;
-  name: string;
-  [key: string]: any;
-}
+import { Repository } from './types/repository'; // import the Repository interface
 
 export default function Home() {
   const { searchTerm, setSearchTerm, repositories, suggestions, loading, error, loadMore, hasMore, totalCount } = useGitHubSearch();
@@ -23,19 +18,18 @@ export default function Home() {
   const [favoriteRepos, setFavoriteRepos] = useState<Repository[]>([]);
 
   useEffect(() => {
-  const storedFavorites = localStorage.getItem('favorites');
-  if (storedFavorites) {
-    const parsedFavorites = new Set<number>(JSON.parse(storedFavorites)); // Type assertion
-    setFavorites(parsedFavorites);
-    const storedRepos = localStorage.getItem('favoriteRepos');
-    if (storedRepos) {
-      const parsedRepos: Repository[] = JSON.parse(storedRepos);
-      const uniqueRepos = Array.from(new Map(parsedRepos.map(repo => [repo.id, repo])).values());
-      setFavoriteRepos(uniqueRepos);
+    const storedFavorites = localStorage.getItem('favorites');
+    if (storedFavorites) {
+      const parsedFavorites = new Set<number>(JSON.parse(storedFavorites));
+      setFavorites(parsedFavorites);
+      const storedRepos = localStorage.getItem('favoriteRepos');
+      if (storedRepos) {
+        const parsedRepos: Repository[] = JSON.parse(storedRepos);
+        const uniqueRepos = Array.from(new Map(parsedRepos.map(repo => [repo.id, repo])).values());
+        setFavoriteRepos(uniqueRepos);
+      }
     }
-  }
-}, []);
-
+  }, []);
 
   const toggleFavorite = (repo: Repository) => {
     setFavorites(prev => {
@@ -149,3 +143,4 @@ export default function Home() {
     </ClientOnly>
   );
 }
+
