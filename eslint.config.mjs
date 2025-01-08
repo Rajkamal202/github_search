@@ -12,6 +12,10 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    parserOptions: {
+      ecmaVersion: 2020,
+      sourceType: "module",  // Make sure it's set to 'module' for ES Modules support
+    },
     rules: {
       // Disable specific ESLint rules
       "@typescript-eslint/no-explicit-any": "off",
@@ -21,3 +25,4 @@ const eslintConfig = [
 ];
 
 export default eslintConfig;
+

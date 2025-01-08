@@ -1,3 +1,4 @@
+
 class TrieNode {
     children: Map<string, TrieNode>;
     isEndOfWord: boolean;
