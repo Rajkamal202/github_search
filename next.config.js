@@ -10,12 +10,7 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
-    unoptimized: true
   },
-  // Ensure assets are served from the correct path
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/' : '',
-  // Handle trailing slashes consistently
-  trailingSlash: false,
   // Optimize production builds
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
@@ -28,5 +23,6 @@ const nextConfig = {
 }
 
 module.exports = nextConfig
+
 
 
