@@ -1,23 +1,12 @@
 import './globals.css'
-import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/theme-provider'
 
-const inter = Inter({ subsets: ['latin'], display: 'swap' })
+const inter = Inter({ subsets: ['latin'] })
 
-export const metadata: Metadata = {
-  title: 'GitHubExplorer - Discover and Explore GitHub Repositories',
-  description: 'Search, explore, and bookmark GitHub repositories with ease.',
-}
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
-  ],
+export const metadata = {
+  title: 'GitHub Explorer',
+  description: 'Explore GitHub repositories with ease',
 }
 
 export default function RootLayout({
@@ -26,15 +15,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head />
+    <html lang="en">
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-          storageKey="github-explorer-theme"
         >
           {children}
         </ThemeProvider>
@@ -42,8 +29,6 @@ export default function RootLayout({
     </html>
   )
 }
-
-
 
 
 
