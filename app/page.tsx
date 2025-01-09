@@ -8,19 +8,34 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Header from '@/components/Headers';
 import Footer from '@/components/Footer';
-import { Github, Star, TrendingUp } from 'lucide-react';
+import { Github, Star, TrendingUp } from 'lucide-react'
 import ClientOnly from '@/components/client-only';
 import ErrorBoundary from '@/components/ErrorBoundary';
+
+interface Repository {
+  id: number;
+  name: string;
+  full_name: string;
+  description: string;
+  stargazers_count: number;
+  forks_count: number;
+  html_url: string;
+  language: string;
+  owner: {
+    avatar_url: string;
+    login: string;
+  };
+}
 
 export default function Home() {
   const { searchTerm, setSearchTerm, repositories, suggestions, loading, error, loadMore, hasMore, totalCount } = useGitHubSearch();
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
-  const [favoriteRepos, setFavoriteRepos] = useState<any[]>([]);
+  const [favoriteRepos, setFavoriteRepos] = useState<Repository[]>([]);
 
   useEffect(() => {
     const storedFavorites = localStorage.getItem('favorites');
     if (storedFavorites) {
-      const parsedFavorites = new Set(JSON.parse(storedFavorites));
+      const parsedFavorites = new Set<number>(JSON.parse(storedFavorites).map(Number));
       setFavorites(parsedFavorites);
       const storedRepos = localStorage.getItem('favoriteRepos');
       if (storedRepos) {
@@ -29,7 +44,7 @@ export default function Home() {
     }
   }, []);
 
-  const toggleFavorite = (repo: any) => {
+  const toggleFavorite = (repo: Repository) => {
     setFavorites(prev => {
       const newFavorites = new Set(prev);
       if (newFavorites.has(repo.id)) {
@@ -135,5 +150,4 @@ export default function Home() {
     </ClientOnly>
   );
 }
-
 
