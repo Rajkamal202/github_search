@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  swcMinify: true,
   images: {
     domains: ['avatars.githubusercontent.com'],
     remotePatterns: [
@@ -11,18 +12,18 @@ const nextConfig = {
       },
     ],
   },
-  // Optimize production builds
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+  // Ensure proper routing
+  trailingSlash: false,
+  // Output as a static website
+  output: 'export',
+  // Disable image optimization for static export
+  images: {
+    unoptimized: true,
   },
-  // Ensure proper error handling
-  onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
-  }
 }
 
 module.exports = nextConfig
+
 
 
 
