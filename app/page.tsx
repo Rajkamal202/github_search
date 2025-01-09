@@ -1,26 +1,20 @@
-'use client';
+'use client'
 
 import { useState, useEffect } from 'react';
 import { useGitHubSearch } from '../hooks/useGithubSearch';
 import SearchBar from '@/components/SearchBar';
 import RepositoryList from '@/components/RepositoryList';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Header from '@/components/Headers';
 import Footer from '@/components/Footer';
 import { Github, Star, TrendingUp } from 'lucide-react';
 import ClientOnly from '@/components/client-only';
 
-interface Repository {
-  id: number;
-  name: string;
-  [key: string]: any;
-}
-
 export default function Home() {
   const { searchTerm, setSearchTerm, repositories, suggestions, loading, error, loadMore, hasMore, totalCount } = useGitHubSearch();
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
-  const [favoriteRepos, setFavoriteRepos] = useState<Repository[]>([]);
+  const [favoriteRepos, setFavoriteRepos] = useState<any[]>([]);
 
   useEffect(() => {
     const storedFavorites = localStorage.getItem('favorites');
@@ -29,14 +23,17 @@ export default function Home() {
       setFavorites(parsedFavorites);
       const storedRepos = localStorage.getItem('favoriteRepos');
       if (storedRepos) {
-        const parsedRepos: Repository[] = JSON.parse(storedRepos);
-        const uniqueRepos = Array.from(new Map(parsedRepos.map(repo => [repo.id, repo])).values());
+        // Ensure unique repos by using Set
+        const parsedRepos = JSON.parse(storedRepos);
+        const uniqueRepos = Array.from(
+          new Map(parsedRepos.map((repo: any) => [repo.id, repo])).values()
+        );
         setFavoriteRepos(uniqueRepos);
       }
     }
   }, []);
 
-  const toggleFavorite = (repo: Repository) => {
+  const toggleFavorite = (repo: any) => {
     setFavorites(prev => {
       const newFavorites = new Set(prev);
       if (newFavorites.has(repo.id)) {
@@ -44,12 +41,14 @@ export default function Home() {
         setFavoriteRepos(current => current.filter(r => r.id !== repo.id));
       } else {
         newFavorites.add(repo.id);
+        // Check if repo already exists in favoriteRepos before adding
         setFavoriteRepos(current => 
           current.some(r => r.id === repo.id) 
             ? current 
             : [...current, repo]
         );
       }
+      // Save to localStorage after state updates
       const updatedFavoriteRepos = newFavorites.has(repo.id)
         ? [...favoriteRepos, repo].filter(r => newFavorites.has(r.id))
         : favoriteRepos.filter(r => newFavorites.has(r.id));
@@ -66,7 +65,7 @@ export default function Home() {
         <Header />
         <main className="flex-grow container mx-auto px-4 py-8">
           <section className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Discover GitHub&apos;s Hidden Gems</h1>
+            <h1 className="text-4xl font-bold mb-4">Discover GitHub's Hidden Gems</h1>
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
               Explore millions of repositories, find trending projects, and bookmark your favorites.
             </p>
@@ -148,3 +147,4 @@ export default function Home() {
     </ClientOnly>
   );
 }
+
