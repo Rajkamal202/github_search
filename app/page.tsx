@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Header from '@/components/Headers';
 import Footer from '@/components/Footer';
-import { Github, Star, TrendingUp } from 'lucide-react'
+import { Github, Star, TrendingUp } from 'lucide-react';
 import ClientOnly from '@/components/client-only';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
@@ -150,4 +150,5 @@ export default function Home() {
     </ClientOnly>
   );
 }
+
 
