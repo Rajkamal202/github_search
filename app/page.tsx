@@ -10,6 +10,10 @@ import Header from '@/components/Headers';
 import Footer from '@/components/Footer';
 import { Github, Star, TrendingUp } from 'lucide-react';
 import ClientOnly from '@/components/client-only';
+<<<<<<< HEAD
+=======
+import { Repository } from './types/repository'; // import the Repository interface
+>>>>>>> f5d4843296882cac351305d2425715dc53dd0d56
 
 export default function Home() {
   const { searchTerm, setSearchTerm, repositories, suggestions, loading, error, loadMore, hasMore, totalCount } = useGitHubSearch();
@@ -19,7 +23,7 @@ export default function Home() {
   useEffect(() => {
     const storedFavorites = localStorage.getItem('favorites');
     if (storedFavorites) {
-      const parsedFavorites = new Set(JSON.parse(storedFavorites));
+      const parsedFavorites = new Set<number>(JSON.parse(storedFavorites));
       setFavorites(parsedFavorites);
       const storedRepos = localStorage.getItem('favoriteRepos');
       if (storedRepos) {
