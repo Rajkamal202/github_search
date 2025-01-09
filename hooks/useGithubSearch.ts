@@ -62,7 +62,7 @@ export function useGitHubSearch() {
 
       if (pageNum === 1) {
         seenRepos.clear(); // Clear seen repos when starting a new search
-        newRepos.forEach(repo => seenRepos.add(repo.id));
+        newRepos.forEach((repo: Repository) => seenRepos.add(repo.id));
         setRepositories(newRepos);
       } else {
         setRepositories(prev => [...prev, ...newRepos]);
@@ -119,4 +119,5 @@ export function useGitHubSearch() {
     totalCount,
   };
 }
+
 
